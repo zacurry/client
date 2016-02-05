@@ -11,11 +11,12 @@ import (
 	"testing"
 
 	"github.com/keybase/client/go/libkb"
+	"github.com/keybase/client/go/logger"
 	keybase1 "github.com/keybase/client/go/protocol"
 )
 
-func SetupEngineTest(tb testing.TB, name string) libkb.TestContext {
-	tc := libkb.SetupTest(tb, name)
+func SetupEngineTest(t logger.TestLogBackend, name string) libkb.TestContext {
+	tc := libkb.SetupTest(t, name)
 	return tc
 }
 
@@ -49,10 +50,10 @@ func (fu FakeUser) NormalizedUsername() libkb.NormalizedUsername {
 	return libkb.NewNormalizedUsername(fu.Username)
 }
 
-func NewFakeUserOrBust(tb testing.TB, prefix string) (fu *FakeUser) {
+func NewFakeUserOrBust(t logger.TestLogBackend, prefix string) (fu *FakeUser) {
 	var err error
 	if fu, err = NewFakeUser(prefix); err != nil {
-		tb.Fatal(err)
+		t.Fatal(err)
 	}
 	return fu
 }
