@@ -13,7 +13,6 @@ import (
 	"os"
 	"path"
 	"sync"
-	"testing"
 
 	"golang.org/x/net/context"
 
@@ -28,7 +27,7 @@ type TestConfig struct {
 
 func (c *TestConfig) GetConfigFileName() string { return c.configFileName }
 
-func (c *TestConfig) InitTest(t *testing.T, initConfig string) {
+func (c *TestConfig) InitTest(t logger.TestLogBackend, initConfig string) {
 	G.Log = logger.NewTestLogger(t)
 	G.Init()
 
@@ -60,11 +59,11 @@ func (c *TestConfig) CleanTest() {
 // TestOutput is a mock interface for capturing and testing output
 type TestOutput struct {
 	expected string
-	t        *testing.T
+	t        logger.TestLogBackend
 	called   *bool
 }
 
-func NewTestOutput(e string, t *testing.T, c *bool) TestOutput {
+func NewTestOutput(e string, t logger.TestLogBackend, c *bool) TestOutput {
 	return TestOutput{e, t, c}
 }
 
@@ -81,8 +80,7 @@ type TestContext struct {
 	G          *GlobalContext
 	PrevGlobal *GlobalContext
 	Tp         TestParameters
-	// TODO: Rename this to TB.
-	T testing.TB
+	T          logger.TestLogBackend
 }
 
 func (tc *TestContext) Cleanup() {
@@ -181,7 +179,7 @@ func (tc TestContext) ClearAllStoredSecrets() error {
 
 var setupTestMu sync.Mutex
 
-func setupTestContext(tb testing.TB, name string, tcPrev *TestContext) (tc TestContext, err error) {
+func setupTestContext(t logger.TestLogBackend, name string, tcPrev *TestContext) (tc TestContext, err error) {
 	setupTestMu.Lock()
 	defer setupTestMu.Unlock()
 
@@ -190,7 +188,7 @@ func setupTestContext(tb testing.TB, name string, tcPrev *TestContext) (tc TestC
 	// In debugging mode, dump all log, don't use the test logger.
 	// We only use the environment variable to discover debug mode
 	if val, _ := getEnvBool("KEYBASE_DEBUG"); !val {
-		g.Log = logger.NewTestLogger(tb)
+		g.Log = logger.NewTestLogger(t)
 	}
 
 	buf := make([]byte, 5)
@@ -252,16 +250,16 @@ func setupTestContext(tb testing.TB, name string, tcPrev *TestContext) (tc TestC
 	tc.PrevGlobal = G
 	G = g
 	tc.G = g
-	tc.T = tb
+	tc.T = t
 
 	return
 }
 
-func SetupTest(tb testing.TB, name string) (tc TestContext) {
+func SetupTest(t logger.TestLogBackend, name string) (tc TestContext) {
 	var err error
-	tc, err = setupTestContext(tb, name, nil)
+	tc, err = setupTestContext(t, name, nil)
 	if err != nil {
-		tb.Fatal(err)
+		t.Fatal(err)
 	}
 	return tc
 }
