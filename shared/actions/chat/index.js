@@ -306,11 +306,13 @@ function * _loadMoreMessages (action: Constants.LoadMoreMessages): SagaGenerator
   const conversationID = Constants.keyToConversationID(conversationIDKey)
 
   const updateThread = function * (thread: ChatTypes.ThreadView) {
-    thread.messages.forEach(message => {
-      if (message.valid.messageBody.messageType === ChatTypes.CommonMessageType.attachment) {
-        console.log('YYY', message.valid.serverHeader.messageID, message.valid.messageBody.attachment.uploaded, message)
-      }
-    })
+    if (thread) {
+      thread.messages.forEach(message => {
+        if (message.valid.messageBody.messageType === ChatTypes.CommonMessageType.attachment) {
+          console.log('YYY', message.valid.serverHeader.messageID, message.valid.messageBody.attachment.uploaded, message)
+        }
+      })
+    }
     const messages = (thread && thread.messages || []).map(message => _unboxedToMessage(message, yourName, yourDeviceName, conversationIDKey)).reverse()
     let newMessages = []
     messages.forEach((message, idx) => {
