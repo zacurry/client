@@ -8,6 +8,22 @@ import type {Tab} from '../constants/tabs'
 import type {Action} from '../constants/types/flux'
 import type {Config, GetCurrentStatusRes, ExtendedStatus} from '../constants/types/flow-types'
 
+window.usedKeys = new Set()
+
+function spyGets (id, obj) {
+  return new Proxy(obj, {
+    get: function(target, name) {
+      const val = target[name]
+      const fullID = id + '.' + name
+      window.usedKeys.add(fullID)
+      if (val && typeof val === 'object') {
+        return spyGets(fullID, val)
+      }
+      return val
+    }
+  })
+}
+
 export type ConfigState = {
   appFocused: boolean,
   bootStatus: BootStatus,
@@ -54,7 +70,7 @@ const initialState: ConfigState = {
   username: null,
 }
 
-export default function (state: ConfigState = initialState, action: Action): ConfigState {
+function realReducer (state: ConfigState = initialState, action: Action): ConfigState {
   switch (action.type) {
     case CommonConstants.resetStore:
       return {
@@ -210,4 +226,9 @@ export default function (state: ConfigState = initialState, action: Action): Con
     default:
       return state
   }
+}
+
+export default function (state, action): ConfigState {
+  const newState = realReducer(state, action)
+  return newState !== state ? spyGets('config', newState) : state
 }

@@ -125,9 +125,9 @@ function setupApp (store) {
     let previousStore = _currentStore
     _currentStore = subsetsRemotesCareAbout(store.getState())
 
-    if (JSON.stringify(previousStore) !== JSON.stringify(_currentStore)) {
-      ipcRenderer.send('stateChange', store.getState())
-    }
+    //if (JSON.stringify(previousStore) !== JSON.stringify(_currentStore)) {
+      //ipcRenderer.send('stateChange', store.getState())
+    //}
   }, 1000))
 
   // Handle notifications from the service
