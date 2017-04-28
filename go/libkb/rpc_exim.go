@@ -939,9 +939,8 @@ func (l sharedDHKeyList) Swap(i, j int) {
 
 // ExportSharedDHKeys exports the Shared DH public KIDs.
 func (ckf ComputedKeyFamily) ExportSharedDHKeys() (ret []keybase1.SharedDHKey) {
-
-	for gen, kid := range ckf.cki.SharedDHKeys {
-		ret = append(ret, keybase1.SharedDHKey{Gen: int(gen), Kid: kid})
+	for _, key := range ckf.cki.SharedDHKeys {
+		ret = append(ret, key)
 	}
 	sort.Sort(sharedDHKeyList(ret))
 	return ret

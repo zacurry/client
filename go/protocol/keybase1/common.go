@@ -188,8 +188,9 @@ type UserVersionVector struct {
 }
 
 type SharedDHKey struct {
-	Gen int `codec:"gen" json:"gen"`
-	Kid KID `codec:"kid" json:"kid"`
+	Gen   int `codec:"gen" json:"gen"`
+	Seqno int `codec:"seqno" json:"seqno"`
+	Kid   KID `codec:"kid" json:"kid"`
 }
 
 type UserPlusKeys struct {

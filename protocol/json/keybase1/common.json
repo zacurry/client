@@ -359,6 +359,10 @@
           "name": "gen"
         },
         {
+          "type": "int",
+          "name": "seqno"
+        },
+        {
           "type": "KID",
           "name": "kid"
         }

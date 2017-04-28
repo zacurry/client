@@ -5089,6 +5089,7 @@ export type SessionToken = string
 
 export type SharedDHKey = {
   gen: int,
+  seqno: int,
   kid: KID,
 }
 
