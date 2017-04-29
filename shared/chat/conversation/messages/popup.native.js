@@ -36,12 +36,14 @@ function _textMessagePopupHelper ({message, type, onDeleteMessage, onHidden, onS
 function _attachmentMessagePopupHelper ({message, onSaveAttachment, onShareAttachment, onHidden}: AttachmentProps) {
   const attachment: ChatConstants.AttachmentMessage = message
   const items = []
+  let itemType = 'File'
+  if (attachment.filename != null && attachment.filename.match(/[^/]+\.(jpg|png|gif|jpeg|bmp)$/) != null) itemType = 'Image'
   items.push({
     onClick: () => {
       onSaveAttachment && onSaveAttachment(attachment)
       onHidden()
     },
-    title: 'Save Image',
+    title: 'Save ' + itemType,
   })
 
   if (isIOS && onShareAttachment) {
@@ -50,7 +52,7 @@ function _attachmentMessagePopupHelper ({message, onSaveAttachment, onShareAttac
         onShareAttachment && onShareAttachment(attachment)
         onHidden()
       },
-      title: 'Share Image',
+      title: 'Share ' + itemType,
     })
   }
 

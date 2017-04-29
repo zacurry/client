@@ -36,7 +36,14 @@ function showShareActionSheet (options: {url?: ?any, message?: ?any}): Promise<{
 
 type NextURI = string
 function saveAttachment (filePath: string): Promise<NextURI> {
-  return CameraRoll.saveToCameraRoll(filePath)
+  console.log('saveAttachment: ', filePath)
+  if (isIOS || (filePath != null && filePath.match(/[^/]+\.(jpg|png|gif|jpeg|bmp)$/) != null)) {
+    if (!isIOS) filePath = 'file://' + filePath
+    console.log('Saving to camera roll: ', filePath)
+    return CameraRoll.saveToCameraRoll(filePath)
+  }
+  console.log('Android: Leaving at ', filePath)
+  return Promise.resolve(filePath)
 }
 
 function configurePush () {

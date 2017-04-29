@@ -25,7 +25,10 @@ function * onShareAttachment ({payload: {message}}: Constants.ShareAttachment): 
 function * onSaveAttachmentNative ({payload: {message}}: Constants.SaveAttachment): SagaGenerator<any, any> {
   const {filename, messageID, conversationIDKey} = message
   if (filename && messageID) {
-    const path = downloadFilePath(filename)
+    let path = tmpFile(filename)
+    if (filename.match(/[^/]+\.(jpg|png|gif|jpeg|bmp)$/) == null) {
+      path = downloadFilePath(filename)
+    }
     yield call(onLoadAttachment, Creators.loadAttachment(conversationIDKey, messageID, path, false, false))
     yield call(saveAttachment, path)
   }

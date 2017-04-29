@@ -1,5 +1,6 @@
 // @flow
 import RNFetchBlob from 'react-native-fetch-blob'
+import {isAndroid} from '../constants/platform'
 
 function tmpDir (): string {
   return RNFetchBlob.fs.dirs.CacheDir
@@ -10,6 +11,9 @@ function tmpFile (suffix: string): string {
 }
 
 function downloadFilePath (suffix: string): string {
+  if (isAndroid) {
+    return `${RNFetchBlob.fs.dirs.DownloadDir}/${suffix}`
+  }
   return `${tmpDir()}/${suffix}`
 }
 
