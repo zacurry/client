@@ -26,7 +26,7 @@ function * onSaveAttachmentNative ({payload: {message}}: Constants.SaveAttachmen
   const {filename, messageID, conversationIDKey} = message
   if (filename && messageID) {
     let path = tmpFile(filename)
-    if (filename.match(/[^/]+\.(jpg|png|gif|jpeg|bmp)$/) == null) {
+    if (Constants.isImageFileName(filename)) {
       path = downloadFilePath(filename)
     }
     yield call(onLoadAttachment, Creators.loadAttachment(conversationIDKey, messageID, path, false, false))

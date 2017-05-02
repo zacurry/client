@@ -37,7 +37,7 @@ function _attachmentMessagePopupHelper ({message, onSaveAttachment, onShareAttac
   const attachment: ChatConstants.AttachmentMessage = message
   const items = []
   let itemType = 'File'
-  if (attachment.filename != null && attachment.filename.match(/[^/]+\.(jpg|png|gif|jpeg|bmp)$/) != null) itemType = 'Image'
+  if (attachment.filename != null && ChatConstants.isImageFileName(attachment.filename)) itemType = 'Image'
   items.push({
     onClick: () => {
       onSaveAttachment && onSaveAttachment(attachment)

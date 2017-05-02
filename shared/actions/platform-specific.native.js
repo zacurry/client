@@ -8,6 +8,7 @@ import {isDevApplePushToken} from '../local-debug'
 import {chatTab} from '../constants/tabs'
 import {setInitialTab, setInitialLink} from './config'
 import {setInitialConversation} from './chat'
+import {isImageFileName} from '../constants/chat'
 
 import type {AsyncAction} from '../constants/types/flux'
 
@@ -37,7 +38,7 @@ function showShareActionSheet (options: {url?: ?any, message?: ?any}): Promise<{
 type NextURI = string
 function saveAttachment (filePath: string): Promise<NextURI> {
   console.log('saveAttachment: ', filePath)
-  if (isIOS || (filePath != null && filePath.match(/[^/]+\.(jpg|png|gif|jpeg|bmp)$/) != null)) {
+  if (isIOS || isImageFileName(filePath)) {
     if (!isIOS) filePath = 'file://' + filePath
     console.log('Saving to camera roll: ', filePath)
     return CameraRoll.saveToCameraRoll(filePath)
