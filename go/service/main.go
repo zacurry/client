@@ -112,6 +112,7 @@ func (d *Service) RegisterProtocols(srv *rpc.Server, xp rpc.Transporter, connID 
 		chat1.LocalProtocol(newChatLocalHandler(xp, cg, d.attachmentstore, d.gregor)),
 		keybase1.SimpleFSProtocol(NewSimpleFSHandler(xp, g)),
 		keybase1.LogsendProtocol(NewLogsendHandler(xp, g)),
+		keybase1.TeamsProtocol(NewTeamsHandler(xp, connID, g)),
 	}
 	for _, proto := range protocols {
 		if err = srv.Register(proto); err != nil {
