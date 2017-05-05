@@ -23,6 +23,23 @@ import type {RouteProps} from './route-tree/render-route'
 type OwnProps = RouteProps<{}, {}>
 
 class CardStackShim extends Component {
+  constructor () {
+    super()
+    this.state = {
+      routeKeys: {},
+    }
+  }
+
+  componentWillReceiveProps (nextProps) {
+    const oldRouteKeys = this.state.routeKeys
+    const routeKeys = {}
+    nextProps.stack.forEach(route => {
+      const routeName = route.path.join('/')
+      routeKeys[routeName] = oldRouteKeys[routeName] || `${routeName}-Math.random()`
+    })
+    this.setState({routeKeys})
+  }
+
   getScreenOptions = () => ({})
   getStateForAction = () => ({})
   getActionForPathAndParams = () => ({})
@@ -48,7 +65,8 @@ class CardStackShim extends Component {
         index: stack.size - 1,
         routes: stack.map(route => {
           const routeName = route.path.join('/')
-          return {key: routeName, routeName, params: route}
+          const key = this.state.routeKeys[routeName]
+          return {key, routeName, params: route}
         }).toArray(),
       },
       dispatch: this._dispatchShim,
