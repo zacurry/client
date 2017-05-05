@@ -196,6 +196,7 @@ type SharedDHKey struct {
 type UserPlusKeys struct {
 	Uid               UID               `codec:"uid" json:"uid"`
 	Username          string            `codec:"username" json:"username"`
+	EldestSeqno       int               `codec:"eldestSeqno" json:"eldestSeqno"`
 	DeviceKeys        []PublicKey       `codec:"deviceKeys" json:"deviceKeys"`
 	RevokedDeviceKeys []RevokedKey      `codec:"revokedDeviceKeys" json:"revokedDeviceKeys"`
 	PGPKeyCount       int               `codec:"pgpKeyCount" json:"pgpKeyCount"`

@@ -1015,8 +1015,9 @@ func (u *User) ExportToVersionVector(idTime keybase1.Time) keybase1.UserVersionV
 
 func (u *User) ExportToUserPlusKeys(idTime keybase1.Time) keybase1.UserPlusKeys {
 	ret := keybase1.UserPlusKeys{
-		Uid:      u.GetUID(),
-		Username: u.GetName(),
+		Uid:         u.GetUID(),
+		Username:    u.GetName(),
+		EldestSeqno: int(u.GetCurrentEldestSeqno()),
 	}
 	ckf := u.GetComputedKeyFamily()
 	if ckf != nil {

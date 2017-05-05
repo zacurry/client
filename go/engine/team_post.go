@@ -68,8 +68,11 @@ func (e *NewTeamEngine) Run(ctx *Context) (err error) {
 		return err
 	}
 
-	// TODO BEFORE LANDING: Get the owner's eldest seqno and format it as part of the name here, to handle resets.
-	ownerName := me.GetName()
+	ownerName, err := libkb.NameWithEldestSeqno(me.GetName(), me.GetCurrentEldestSeqno())
+	// An error happens here if the seqno isn't loaded for some reason.
+	if err != nil {
+		return err
+	}
 
 	id := libkb.RootTeamIDFromName(e.name)
 	teamSection := libkb.TeamSection{
@@ -96,15 +99,17 @@ func (e *NewTeamEngine) Run(ctx *Context) (err error) {
 		return err
 	}
 
+	// Note that the key boxes use usernames directly, without the %Seqno
+	// annotation from the roles section.
 	ownerSharedDHKey := me.GetComputedKeyFamily().GetLatestSharedDHKey()
 	if ownerSharedDHKey == nil {
 		return fmt.Errorf("can't create new team without a shared DH key")
 	}
-	ownerSharedKeyBox, err := makeSharedTeamKeyBox(ephemeralPair, *ownerSharedDHKey, ownerName, sharedSecretKey, id)
+	ownerSharedKeyBox, err := makeSharedTeamKeyBox(ephemeralPair, *ownerSharedDHKey, me.GetName(), sharedSecretKey, id)
 	if err != nil {
 		return err
 	}
-	teamSection.SharedKey.Boxes[ownerName] = ownerSharedKeyBox
+	teamSection.SharedKey.Boxes[me.GetName()] = ownerSharedKeyBox
 
 	innerJSON, err := me.TeamRootSig(sigKey, teamSection)
 	if err != nil {
